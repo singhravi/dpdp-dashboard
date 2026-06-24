@@ -1,0 +1,3001 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      DPDP Act 2023 &amp; Rules 2025 — Compliance Monitoring Dashboard and
+      Related Information
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── Reset ── */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        background: #f0f4f8;
+        color: #1a2332;
+      }
+
+      /* ── Design tokens ── */
+      :root {
+        --navy: #0d1b2a;
+        --navy-mid: #1a2d45;
+        --teal: #0d9488;
+        --teal-bg: #e6f7f6;
+        --teal-border: #a7e3df;
+        --amber: #d97706;
+        --amber-bg: #fef3c7;
+        --amber-border: #fcd34d;
+        --red: #dc2626;
+        --red-bg: #fee2e2;
+        --red-border: #fca5a5;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+        --blue-border: #93c5fd;
+        --purple: #7c3aed;
+        --purple-bg: #ede9fe;
+        --green: #059669;
+        --green-bg: #d1fae5;
+        --green-border: #6ee7b7;
+        --surface: #ffffff;
+        --surface2: #f8fafc;
+        --surface3: #f0f4f8;
+        --border: #e2e8f0;
+        --border2: #cbd5e1;
+        --text1: #1a2332;
+        --text2: #475569;
+        --text3: #94a3b8;
+        --sidebar-w: 220px;
+        --topbar-h: 54px;
+        --mono: "JetBrains Mono", monospace;
+        --radius: 8px;
+        --radius-sm: 5px;
+      }
+
+      /* ── Layout ── */
+      #app {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ── Topbar ── */
+      #topbar {
+        height: var(--topbar-h);
+        background: var(--navy);
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        gap: 14px;
+        flex-shrink: 0;
+        z-index: 100;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+      .logo-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, var(--teal), #0f766e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .logo-title {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+      }
+      .logo-sub {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 11px;
+        margin-top: 1px;
+      }
+      .logo-badge {
+        background: rgba(13, 148, 136, 0.25);
+        border: 1px solid rgba(13, 148, 136, 0.4);
+        color: #5eead4;
+        font-size: 10px;
+        font-weight: 500;
+        padding: 2px 7px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+        margin-left: 6px;
+      }
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .live-pill {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+      .menu-btn {
+        display: none;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+      }
+      @media (max-width: 640px) {
+        .menu-btn {
+          display: block;
+        }
+      }
+
+      /* ── Body ── */
+      #body {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* ── Sidebar ── */
+      #sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        flex-shrink: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.25s ease;
+      }
+      @media (max-width: 640px) {
+        #sidebar {
+          position: fixed;
+          left: 0;
+          top: var(--topbar-h);
+          height: calc(100vh - var(--topbar-h));
+          z-index: 200;
+          transform: translateX(-100%);
+          box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        }
+        #sidebar.open {
+          transform: translateX(0);
+        }
+      }
+      .ns {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 16px 16px 5px;
+      }
+      .ni {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 16px;
+        font-size: 12.5px;
+        font-weight: 400;
+        color: var(--text2);
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition:
+          background 0.12s,
+          color 0.12s;
+      }
+      .ni:hover {
+        background: var(--surface2);
+        color: var(--text1);
+      }
+      .ni.active {
+        background: #eef9f8;
+        color: var(--teal);
+        font-weight: 500;
+        border-left-color: var(--teal);
+      }
+      .ni .ico {
+        font-size: 15px;
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .nb {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+        line-height: 1.4;
+      }
+      .nb.r {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .nb.a {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .nb.g {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+
+      /* ── Content ── */
+      #content {
+        flex: 1;
+        overflow-y: auto;
+        background: var(--surface3);
+      }
+      .page {
+        display: none;
+        padding: 22px 24px;
+        animation: fadeIn 0.18s ease;
+      }
+      .page.show {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .ptitle {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text1);
+        letter-spacing: -0.3px;
+        margin-bottom: 2px;
+      }
+      .psub {
+        font-size: 12px;
+        color: var(--text3);
+        margin-bottom: 18px;
+      }
+
+      /* ── Metric cards ── */
+      .mrow {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .mc {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+      }
+      .ml {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text3);
+        margin-bottom: 7px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .mv {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text1);
+        font-family: var(--mono);
+        line-height: 1;
+      }
+      .md {
+        font-size: 11px;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .md.up {
+        color: var(--green);
+      }
+      .md.dn {
+        color: var(--red);
+      }
+      .md.am {
+        color: var(--amber);
+      }
+
+      /* ── Card ── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+      }
+      .ch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .ct {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text1);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .ct .ico {
+        color: var(--teal);
+      }
+      .ca {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--blue);
+        background: var(--blue-bg);
+        border: 1px solid var(--blue-border);
+        padding: 3px 9px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: opacity 0.15s;
+      }
+      .ca:hover {
+        opacity: 0.8;
+      }
+
+      /* ── Two col ── */
+      .tcol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 720px) {
+        .tcol {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── Status row ── */
+      .sr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 12.5px;
+      }
+      .sr:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .sn {
+        color: var(--text1);
+        flex: 1;
+      }
+      .sp {
+        color: var(--text2);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      /* ── Progress bar ── */
+      .pb {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--surface3);
+        margin-top: 5px;
+        overflow: hidden;
+      }
+      .pf {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.8s ease;
+      }
+      .pf.g {
+        background: var(--teal);
+      }
+      .pf.a {
+        background: var(--amber);
+      }
+      .pf.r {
+        background: var(--red);
+      }
+
+      /* ── Tags ── */
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 10.5px;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 10px;
+        white-space: nowrap;
+      }
+      .tag.crit {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .tag.warn {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .tag.ok {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+      .tag.inf {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      .tag.neu {
+        background: var(--surface2);
+        color: var(--text2);
+        border: 1px solid var(--border);
+      }
+
+      /* ── Alert items ── */
+      .ai {
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+      }
+      .ai:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .aico {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 15px;
+      }
+      .aico.c {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .aico.w {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .aico.i {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      .atitle {
+        font-weight: 600;
+        color: var(--text1);
+        margin-bottom: 2px;
+        font-size: 12.5px;
+      }
+      .adesc {
+        color: var(--text2);
+        font-size: 12px;
+      }
+      .atime {
+        font-size: 10.5px;
+        color: var(--text3);
+        margin-top: 3px;
+      }
+
+      /* ── Table ── */
+      table.dt {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      table.dt th {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--text3);
+        padding: 7px 10px;
+        text-align: left;
+        border-bottom: 1.5px solid var(--border);
+        background: var(--surface2);
+      }
+      table.dt td {
+        padding: 9px 10px;
+        color: var(--text1);
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      table.dt tr:last-child td {
+        border-bottom: none;
+      }
+      table.dt tr:hover td {
+        background: var(--surface2);
+      }
+      .mono {
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      /* ── Ring ── */
+      .ring-wrap {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 4px 0;
+      }
+      .ring-legend .ri {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11.5px;
+        color: var(--text2);
+        padding: 4px 0;
+      }
+      .rsw {
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .rp {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text1);
+        font-weight: 500;
+      }
+
+      /* ── Filter buttons ── */
+      .fb {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .fbtn {
+        font-size: 11.5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        background: var(--surface);
+        color: var(--text2);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: all 0.15s;
+      }
+      .fbtn:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .fbtn.act {
+        background: var(--teal-bg);
+        color: var(--teal);
+        border-color: var(--teal-border);
+      }
+
+      /* ── Classification tags ── */
+      .ct2 {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10.5px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+      .cs {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .cp {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .cg {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .cc {
+        background: var(--purple-bg);
+        color: var(--purple);
+      }
+
+      /* ── Timeline ── */
+      .tli {
+        display: flex;
+        gap: 11px;
+        font-size: 12px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .tli:last-child {
+        border-bottom: none;
+      }
+      .tld {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        color: var(--text3);
+        width: 72px;
+        flex-shrink: 0;
+        padding-top: 3px;
+      }
+      .tldot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+      .tlb {
+        flex: 1;
+      }
+      .tlt {
+        color: var(--text1);
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .tls {
+        color: var(--text2);
+      }
+
+      /* ── Chips ── */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .chip {
+        font-size: 11.5px;
+        padding: 5px 11px;
+        border-radius: 6px;
+        background: var(--surface2);
+        color: var(--text2);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: all 0.15s;
+      }
+      .chip:hover {
+        background: var(--teal-bg);
+        color: var(--teal);
+        border-color: var(--teal-border);
+      }
+
+      /* ── Divider label ── */
+      .dlabel {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin: 16px 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dlabel::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ── Overlay for mobile ── */
+      #overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 150;
+      }
+      #overlay.show {
+        display: block;
+      }
+
+      /* ── Scrollbar ── */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+
+      /* ── Info Modal ── */
+      #modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(13, 27, 42, 0.55);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      #modal-overlay.show {
+        display: flex;
+      }
+      #modal-box {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        max-width: 520px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: modalIn 0.18s ease;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      #modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 1;
+      }
+      #modal-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-right: 8px;
+      }
+      #modal-label.act {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      #modal-label.rule {
+        background: var(--teal-bg);
+        color: var(--teal);
+      }
+      #modal-label.tip {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      #modal-label.ref {
+        background: var(--purple-bg);
+        color: #7c3aed;
+      }
+      #modal-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text1);
+        flex: 1;
+      }
+      #modal-close {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        line-height: 1;
+        font-family: inherit;
+      }
+      #modal-close:hover {
+        background: var(--red-bg);
+        color: var(--red);
+        border-color: var(--red-border);
+      }
+      #modal-body {
+        padding: 18px 20px;
+      }
+      .modal-section {
+        margin-bottom: 14px;
+      }
+      .modal-section:last-child {
+        margin-bottom: 0;
+      }
+      .modal-section-title {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text3);
+        margin-bottom: 7px;
+      }
+      .modal-section p {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.65;
+        margin-bottom: 7px;
+      }
+      .modal-section p:last-child {
+        margin-bottom: 0;
+      }
+      .modal-bullets {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .modal-bullets li {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.55;
+        padding: 5px 0 5px 18px;
+        position: relative;
+        border-bottom: 1px solid var(--surface3);
+      }
+      .modal-bullets li:last-child {
+        border-bottom: none;
+      }
+      .modal-bullets li::before {
+        content: "›";
+        position: absolute;
+        left: 0;
+        color: var(--teal);
+        font-weight: 600;
+        font-size: 15px;
+        top: 4px;
+      }
+      .modal-penalty-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 12.5px;
+      }
+      .modal-penalty-row:last-child {
+        border-bottom: none;
+      }
+      .modal-penalty-row .amount {
+        font-family: var(--mono);
+        font-weight: 600;
+        color: var(--red);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- TOPBAR -->
+      <div id="topbar">
+        <div class="logo-wrap">
+          <div class="logo-icon">DMP</div>
+          <div>
+            <div class="logo-title">
+              DPDP Monitoring Portal <span class="logo-badge">BETA</span>
+            </div>
+            <div class="logo-sub">
+              Digital Personal Data Protection Act 2023 &amp; Rules 2025
+            </div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="live-pill"><span class="live-dot"></span>Live</div>
+          <button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+            &#9776;
+          </button>
+        </div>
+      </div>
+
+      <div id="overlay" onclick="closeSidebar()"></div>
+
+      <div id="body">
+        <!-- SIDEBAR -->
+        <div id="sidebar">
+          <div class="ns">Overview</div>
+          <div class="ni active" onclick="nav('overview', this)">
+            <span class="ico">&#9783;</span>Dashboard
+          </div>
+          <div class="ni" onclick="nav('compliance', this)">
+            <span class="ico">&#10003;</span>Compliance Score
+            <span class="nb a">68%</span>
+          </div>
+
+          <div class="ns">Monitoring</div>
+          <div class="ni" onclick="nav('alerts', this)">
+            <span class="ico">&#9888;</span>Alerts &amp; Notices
+            <span class="nb r">5</span>
+          </div>
+          <div class="ni" onclick="nav('breach', this)">
+            <span class="ico">&#9760;</span>Breach Tracker
+            <span class="nb r">2</span>
+          </div>
+          <div class="ni" onclick="nav('consent', this)">
+            <span class="ico">&#9998;</span>Consent Mgmt
+            <span class="nb g">OK</span>
+          </div>
+
+          <div class="ns">Enforcement</div>
+          <div class="ni" onclick="nav('dpb', this)">
+            <span class="ico">&#9878;</span>DPB Proceedings
+          </div>
+          <div class="ni" onclick="nav('penalties', this)">
+            <span class="ico">&#9873;</span>Penalties Register
+          </div>
+          <div class="ni" onclick="nav('grievances', this)">
+            <span class="ico">&#9993;</span>Grievance Log
+            <span class="nb a">12</span>
+          </div>
+
+          <div class="ns">Implementation</div>
+          <div class="ni" onclick="nav('discovery', this)">
+            <span class="ico">&#128270;</span>Data Discovery
+          </div>
+          <div class="ni" onclick="nav('classification', this)">
+            <span class="ico">&#127991;</span>Classification
+          </div>
+          <div class="ni" onclick="nav('dpo', this)">
+            <span class="ico">&#128737;</span>DPO Workspace
+          </div>
+
+          <div class="ns">Reference</div>
+          <div class="ni" onclick="nav('timeline', this)">
+            <span class="ico">&#128197;</span>DPDP Timeline
+          </div>
+          <div class="ni" onclick="nav('articles', this)">
+            <span class="ico">&#128216;</span>Act &amp; Rules Index
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div id="content">
+          <!-- ══ OVERVIEW ══ -->
+          <div id="p-overview" class="page show">
+            <div class="ptitle">Dashboard Overview</div>
+            <div class="psub">DPDP Act 2023 · Rules 2025 · June 2026</div>
+
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Compliance Score</div>
+                <div class="mv" style="color: var(--amber)">68%</div>
+                <div class="md am">&#8595; -4% this month</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Open Breaches</div>
+                <div class="mv" style="color: var(--red)">2</div>
+                <div class="md dn">Pending DPB notice</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Open Grievances</div>
+                <div class="mv" style="color: var(--amber)">12</div>
+                <div class="md am">3 overdue</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Data Principals</div>
+                <div class="mv">1.4M</div>
+                <div class="md up">&#8593; +2.1% this month</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Consent Coverage</div>
+                <div class="mv" style="color: var(--teal)">91%</div>
+                <div class="md up">Above threshold</div>
+              </div>
+            </div>
+
+            <div class="tcol">
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">
+                    <span class="ico">&#9685;</span>Compliance Health Ring
+                  </div>
+                </div>
+                <div class="ring-wrap">
+                  <svg
+                    width="100"
+                    height="100"
+                    viewBox="0 0 100 100"
+                    aria-label="Compliance health ring — 68% overall"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#E2E8F0"
+                      stroke-width="10"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#0D9488"
+                      stroke-width="10"
+                      stroke-dasharray="86 153"
+                      stroke-dashoffset="0"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#D97706"
+                      stroke-width="10"
+                      stroke-dasharray="47 153"
+                      stroke-dashoffset="-86"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#2563EB"
+                      stroke-width="10"
+                      stroke-dasharray="38 153"
+                      stroke-dashoffset="-133"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="none"
+                      stroke="#DC2626"
+                      stroke-width="10"
+                      stroke-dasharray="55 153"
+                      stroke-dashoffset="-171"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <text
+                      x="50"
+                      y="46"
+                      text-anchor="middle"
+                      font-size="16"
+                      font-weight="700"
+                      fill="#1A2332"
+                      font-family="Inter,sans-serif"
+                    >
+                      68%
+                    </text>
+                    <text
+                      x="50"
+                      y="59"
+                      text-anchor="middle"
+                      font-size="8.5"
+                      fill="#94A3B8"
+                      font-family="Inter,sans-serif"
+                    >
+                      Overall
+                    </text>
+                  </svg>
+                  <div class="ring-legend">
+                    <div class="ri">
+                      <div class="rsw" style="background: #0d9488"></div>
+                      Consent &amp; Notice<span class="rp">91%</span>
+                    </div>
+                    <div class="ri">
+                      <div class="rsw" style="background: #d97706"></div>
+                      Principal Rights<span class="rp">67%</span>
+                    </div>
+                    <div class="ri">
+                      <div class="rsw" style="background: #2563eb"></div>
+                      DF Duties<span class="rp">54%</span>
+                    </div>
+                    <div class="ri">
+                      <div class="rsw" style="background: #dc2626"></div>
+                      Significant DF<span class="rp">40%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">
+                    <span class="ico">&#9888;</span>Recent Alerts
+                  </div>
+                  <button
+                    class="ca"
+                    onclick="
+                      nav('alerts', document.querySelector('[onclick*=alerts]'))
+                    "
+                  >
+                    View all
+                  </button>
+                </div>
+                <div class="ai">
+                  <div class="aico c">&#9760;</div>
+                  <div>
+                    <div class="atitle">Breach notification overdue</div>
+                    <div class="adesc">
+                      Sec 8(6) — Must notify DPB within 72 hrs. 48 hrs elapsed.
+                    </div>
+                    <div class="atime">2 hours ago</div>
+                  </div>
+                </div>
+                <div class="ai">
+                  <div class="aico w">&#9203;</div>
+                  <div>
+                    <div class="atitle">Grievance response overdue</div>
+                    <div class="adesc">
+                      3 principal requests past 30-day limit
+                    </div>
+                    <div class="atime">Yesterday</div>
+                  </div>
+                </div>
+                <div class="ai">
+                  <div class="aico i">&#128196;</div>
+                  <div>
+                    <div class="atitle">New DPDP Rule notified</div>
+                    <div class="adesc">
+                      Rule 12 — Cross-border transfer update
+                    </div>
+                    <div class="atime">3 days ago</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="ch">
+                <div class="ct">
+                  <span class="ico">&#9881;</span>Obligation Fulfilment by
+                  Section
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">
+                    Notice &amp; Purpose Specification (Sec 5, 6)
+                  </div>
+                  <div class="pb">
+                    <div class="pf g" style="width: 91%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  91%
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">Consent Management (Sec 6, 7)</div>
+                  <div class="pb">
+                    <div class="pf g" style="width: 88%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  88%
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">Data Principal Rights (Sec 11–13)</div>
+                  <div class="pb">
+                    <div class="pf a" style="width: 67%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  67%
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">Data Fiduciary Duties (Sec 8, 9, 10)</div>
+                  <div class="pb">
+                    <div class="pf a" style="width: 54%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  54%
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">Significant Data Fiduciary (Sec 10)</div>
+                  <div class="pb">
+                    <div class="pf r" style="width: 40%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  40%
+                </div>
+              </div>
+              <div class="sr">
+                <div style="flex: 1">
+                  <div class="sn">Cross-border Data Transfers (Sec 16)</div>
+                  <div class="pb">
+                    <div class="pf a" style="width: 62%"></div>
+                  </div>
+                </div>
+                <div class="sp" style="margin-left: 14px; padding-top: 3px">
+                  62%
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ COMPLIANCE ══ -->
+          <div id="p-compliance" class="page">
+            <div class="ptitle">Compliance Score</div>
+            <div class="psub">
+              Obligation-wise assessment mapped to DPDP Act 2023 and Rules 2025
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Overall Score</div>
+                <div class="mv" style="color: var(--amber)">68%</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Critical Gaps</div>
+                <div class="mv" style="color: var(--red)">4</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Partial / In Progress</div>
+                <div class="mv" style="color: var(--amber)">11</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Resolved</div>
+                <div class="mv" style="color: var(--teal)">23</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">&#9997; Act-wise Obligation Checklist</div>
+              </div>
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Section</th>
+                    <th>Obligation</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 5</td>
+                    <td>Notice — grounds for processing</td>
+                    <td><span class="tag ok">Done</span></td>
+                    <td class="mono">95%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 5 — Notice Requirement',
+                            'sec5',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 6</td>
+                    <td>Consent — free, specific, informed</td>
+                    <td><span class="tag ok">Done</span></td>
+                    <td class="mono">88%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal('act', 'Section 6 — Consent', 'sec6')
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 7</td>
+                    <td>Legitimate use without consent</td>
+                    <td><span class="tag warn">Partial</span></td>
+                    <td class="mono">60%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 7 — Legitimate Use Without Consent',
+                            'sec7',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 8</td>
+                    <td>Obligations of Data Fiduciary</td>
+                    <td><span class="tag warn">Partial</span></td>
+                    <td class="mono">54%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 8 — Data Fiduciary Obligations',
+                            'sec8',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 9</td>
+                    <td>Children's data processing</td>
+                    <td><span class="tag crit">Gap</span></td>
+                    <td class="mono" style="color: var(--red)">30%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 9 — Children\'s Personal Data',
+                            'sec9',
+                          )
+                        "
+                      >
+                        Fix ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 10</td>
+                    <td>Significant Data Fiduciary duties</td>
+                    <td><span class="tag crit">Gap</span></td>
+                    <td class="mono" style="color: var(--red)">40%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 10 — Significant Data Fiduciary',
+                            'sec10',
+                          )
+                        "
+                      >
+                        Fix ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 11</td>
+                    <td>Right to information</td>
+                    <td><span class="tag warn">Partial</span></td>
+                    <td class="mono">70%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Sections 11–14 — Data Principal Rights',
+                            'sec11',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 12</td>
+                    <td>Right to correction &amp; erasure</td>
+                    <td><span class="tag warn">Partial</span></td>
+                    <td class="mono">65%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Sections 11–14 — Data Principal Rights',
+                            'sec11',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 13</td>
+                    <td>Right to grievance redressal</td>
+                    <td><span class="tag warn">Partial</span></td>
+                    <td class="mono">55%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'rule',
+                            'Rule 13 — Grievance Redressal Mechanism',
+                            'rule13',
+                          )
+                        "
+                      >
+                        Review ↗
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono" style="color: var(--blue)">Sec 16</td>
+                    <td>Cross-border data transfers</td>
+                    <td><span class="tag crit">Gap</span></td>
+                    <td class="mono" style="color: var(--red)">45%</td>
+                    <td>
+                      <button
+                        class="ca"
+                        onclick="
+                          showModal(
+                            'act',
+                            'Section 16 — Cross-border Data Transfers',
+                            'sec16',
+                          )
+                        "
+                      >
+                        Fix ↗
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ ALERTS ══ -->
+          <div id="p-alerts" class="page">
+            <div class="ptitle">Alerts &amp; Notices</div>
+            <div class="psub">
+              Real-time DPDP compliance alerts and regulatory notices
+            </div>
+            <div class="fb">
+              <button class="fbtn act" onclick="filterA('all', this)">
+                All (5)
+              </button>
+              <button class="fbtn" onclick="filterA('crit', this)">
+                Critical (2)
+              </button>
+              <button class="fbtn" onclick="filterA('warn', this)">
+                Warning (2)
+              </button>
+              <button class="fbtn" onclick="filterA('info', this)">
+                Info (1)
+              </button>
+            </div>
+            <div class="card" id="alert-list">
+              <div class="ai" data-s="crit">
+                <div class="aico c">&#9760;</div>
+                <div>
+                  <div class="atitle">Breach notification overdue</div>
+                  <div class="adesc">
+                    Sec 8(6) &amp; Rule 7 — Breach #BR-2026-041 must be reported
+                    to DPB within 72 hrs. 48 hrs elapsed.
+                  </div>
+                  <div class="atime">
+                    Today, 08:42 AM &middot;
+                    <span class="tag crit">Critical</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ai" data-s="crit">
+                <div class="aico c">&#9888;</div>
+                <div>
+                  <div class="atitle">
+                    Children's data — parental consent missing
+                  </div>
+                  <div class="adesc">
+                    Sec 9 — Parental consent not obtained for 124 minor data
+                    principals. Immediate remediation required.
+                  </div>
+                  <div class="atime">
+                    Yesterday &middot; <span class="tag crit">Critical</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ai" data-s="warn">
+                <div class="aico w">&#9203;</div>
+                <div>
+                  <div class="atitle">3 principal rights requests overdue</div>
+                  <div class="adesc">
+                    Sec 12 — Erasure requests #RQ-1042, #RQ-1038, #RQ-1031
+                    exceed 30-day resolution window.
+                  </div>
+                  <div class="atime">
+                    2 days ago &middot; <span class="tag warn">Warning</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ai" data-s="warn">
+                <div class="aico w">&#128196;</div>
+                <div>
+                  <div class="atitle">
+                    Privacy notice — language update required
+                  </div>
+                  <div class="adesc">
+                    Rule 3 — Notice must be available in all 22 scheduled
+                    languages. 7 languages missing.
+                  </div>
+                  <div class="atime">
+                    4 days ago &middot; <span class="tag warn">Warning</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ai" data-s="info">
+                <div class="aico i">&#128240;</div>
+                <div>
+                  <div class="atitle">
+                    DPB published updated cross-border whitelist
+                  </div>
+                  <div class="adesc">
+                    Sec 16 — 12 new countries added to approved transfer
+                    destinations. Review ongoing transfers.
+                  </div>
+                  <div class="atime">
+                    5 days ago &middot; <span class="tag inf">Info</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ BREACH ══ -->
+          <div id="p-breach" class="page">
+            <div class="ptitle">Breach Tracker</div>
+            <div class="psub">
+              Personal data breach register — Sec 8(6) &amp; Rule 7
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Open Breaches</div>
+                <div class="mv" style="color: var(--red)">2</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Closed (YTD)</div>
+                <div class="mv">8</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Avg. Notify Time</div>
+                <div class="mv">51h</div>
+              </div>
+              <div class="mc">
+                <div class="ml">DPB Reported</div>
+                <div class="mv">6</div>
+              </div>
+            </div>
+            <div class="card">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Principals Affected</th>
+                    <th>Detected</th>
+                    <th>DPB Notified</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono">BR-2026-041</td>
+                    <td>Unauthorized access</td>
+                    <td>8,300</td>
+                    <td>Jun 21</td>
+                    <td style="color: var(--red); font-weight: 500">Overdue</td>
+                    <td><span class="tag crit">Open</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">BR-2026-039</td>
+                    <td>Data exfiltration</td>
+                    <td>420</td>
+                    <td>Jun 19</td>
+                    <td style="color: var(--amber); font-weight: 500">
+                      Pending
+                    </td>
+                    <td><span class="tag warn">In Review</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">BR-2026-031</td>
+                    <td>Accidental disclosure</td>
+                    <td>53</td>
+                    <td>Jun 10</td>
+                    <td>Jun 11</td>
+                    <td><span class="tag ok">Closed</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">BR-2026-022</td>
+                    <td>Ransomware</td>
+                    <td>15,000</td>
+                    <td>May 28</td>
+                    <td>May 29</td>
+                    <td><span class="tag ok">Closed</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">
+                  &#9745; Breach Response Checklist (Sec 8(6) &amp; Rule 7)
+                </div>
+              </div>
+              <div class="sr">
+                <span class="sn">Detect &amp; assess breach severity</span
+                ><span class="tag ok">Done</span>
+              </div>
+              <div class="sr">
+                <span class="sn"
+                  >Internal escalation to DPO &amp; management</span
+                ><span class="tag ok">Done</span>
+              </div>
+              <div class="sr">
+                <span class="sn"
+                  >Notify Data Protection Board within 72 hrs</span
+                ><span class="tag crit">Overdue</span>
+              </div>
+              <div class="sr">
+                <span class="sn"
+                  >Notify affected data principals (if required by DPB)</span
+                ><span class="tag warn">Pending</span>
+              </div>
+              <div class="sr">
+                <span class="sn"
+                  >Root cause analysis &amp; remediation plan</span
+                ><span class="tag warn">In progress</span>
+              </div>
+              <div class="sr">
+                <span class="sn">Post-incident review &amp; policy update</span
+                ><span class="tag neu">Not started</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ CONSENT ══ -->
+          <div id="p-consent" class="page">
+            <div class="ptitle">Consent Management</div>
+            <div class="psub">
+              Consent collection, withdrawal, and validity — Sec 6, 7 &amp;
+              Rules 3, 4
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Total Consents</div>
+                <div class="mv">1.27M</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Active</div>
+                <div class="mv" style="color: var(--teal)">91%</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Withdrawn</div>
+                <div class="mv">62K</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Awaiting Refresh</div>
+                <div class="mv" style="color: var(--amber)">18K</div>
+              </div>
+            </div>
+            <div class="tcol">
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">&#9998; Consent by Processing Purpose</div>
+                </div>
+                <div class="sr">
+                  <span class="sn">Service delivery</span
+                  ><span class="sp">98%</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Analytics &amp; insights</span
+                  ><span class="sp">74%</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Marketing communications</span
+                  ><span class="sp">61%</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Third-party sharing</span
+                  ><span class="sp">52%</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Profiling</span><span class="sp">38%</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">&#9745; Consent Artefact Compliance</div>
+                </div>
+                <div class="sr">
+                  <span class="sn">Plain language notice</span
+                  ><span class="tag ok">OK</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Specific &amp; granular consent</span
+                  ><span class="tag ok">OK</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Withdrawal mechanism available</span
+                  ><span class="tag ok">OK</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Consent records timestamped</span
+                  ><span class="tag ok">OK</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Multilingual notice (22 languages)</span
+                  ><span class="tag crit">Gap</span>
+                </div>
+                <div class="sr">
+                  <span class="sn">Children's parental consent gate</span
+                  ><span class="tag crit">Gap</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ DPB ══ -->
+          <div id="p-dpb" class="page">
+            <div class="ptitle">DPB Proceedings</div>
+            <div class="psub">
+              Data Protection Board of India — inquiry, adjudication &amp; order
+              tracking (Sec 18–27)
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Active Inquiries</div>
+                <div class="mv">0</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Notices Received</div>
+                <div class="mv" style="color: var(--amber)">1</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Orders Against</div>
+                <div class="mv">0</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Total Penalties</div>
+                <div class="mv">&#8377;0</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">&#9878; DPB Case Register</div>
+              </div>
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Case ID</th>
+                    <th>Section</th>
+                    <th>Nature</th>
+                    <th>Stage</th>
+                    <th>Next Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono">DPB/2026/N/001</td>
+                    <td>Sec 8(6)</td>
+                    <td>Breach notification delay</td>
+                    <td><span class="tag warn">Show Cause Notice</span></td>
+                    <td>Jul 10, 2026</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">
+                  &#128216; Penalty Schedule (Sec 33 &amp; Schedule)
+                </div>
+              </div>
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Violation Category</th>
+                    <th>Maximum Penalty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Children's data violations (Sec 9)</td>
+                    <td class="mono">&#8377;200 Crore</td>
+                  </tr>
+                  <tr>
+                    <td>Breach notification failure</td>
+                    <td class="mono">&#8377;200 Crore</td>
+                  </tr>
+                  <tr>
+                    <td>Non-fulfilment of Sec 8 duties</td>
+                    <td class="mono">&#8377;150 Crore</td>
+                  </tr>
+                  <tr>
+                    <td>Significant DF violations (Sec 10)</td>
+                    <td class="mono">&#8377;150 Crore</td>
+                  </tr>
+                  <tr>
+                    <td>Other provisions</td>
+                    <td class="mono">&#8377;50 Crore</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ PENALTIES ══ -->
+          <div id="p-penalties" class="page">
+            <div class="ptitle">Penalties Register</div>
+            <div class="psub">
+              Track fines, appeals &amp; remediation status
+            </div>
+            <div class="card">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Ref</th>
+                    <th>Violation</th>
+                    <th>Amount</th>
+                    <th>Paid</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      colspan="5"
+                      style="
+                        text-align: center;
+                        color: var(--text3);
+                        padding: 32px;
+                        font-size: 13px;
+                      "
+                    >
+                      No penalty orders recorded yet
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ GRIEVANCES ══ -->
+          <div id="p-grievances" class="page">
+            <div class="ptitle">Grievance Log</div>
+            <div class="psub">
+              Data principal grievance redressal — Sec 13 &amp; Rule 13
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Total Received</div>
+                <div class="mv">47</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Open</div>
+                <div class="mv" style="color: var(--amber)">12</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Overdue (&gt;30d)</div>
+                <div class="mv" style="color: var(--red)">3</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Resolved</div>
+                <div class="mv" style="color: var(--teal)">35</div>
+              </div>
+            </div>
+            <div class="card">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Ref</th>
+                    <th>Right Invoked</th>
+                    <th>Received</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono">GR-1042</td>
+                    <td>Erasure (Sec 12)</td>
+                    <td>May 20</td>
+                    <td style="color: var(--red); font-weight: 500">34d</td>
+                    <td><span class="tag crit">Overdue</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1041</td>
+                    <td>Correction (Sec 12)</td>
+                    <td>May 22</td>
+                    <td style="color: var(--red); font-weight: 500">32d</td>
+                    <td><span class="tag crit">Overdue</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1040</td>
+                    <td>Information (Sec 11)</td>
+                    <td>May 25</td>
+                    <td style="color: var(--red); font-weight: 500">29d</td>
+                    <td><span class="tag crit">Overdue</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1039</td>
+                    <td>Nomination (Sec 14)</td>
+                    <td>Jun 1</td>
+                    <td>22d</td>
+                    <td><span class="tag warn">Open</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1038</td>
+                    <td>Erasure (Sec 12)</td>
+                    <td>Jun 5</td>
+                    <td>18d</td>
+                    <td><span class="tag warn">Open</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1037</td>
+                    <td>Information (Sec 11)</td>
+                    <td>Jun 10</td>
+                    <td>13d</td>
+                    <td><span class="tag inf">In Progress</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">GR-1036</td>
+                    <td>Correction (Sec 12)</td>
+                    <td>Jun 15</td>
+                    <td>8d</td>
+                    <td><span class="tag ok">Resolved</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ DISCOVERY ══ -->
+          <div id="p-discovery" class="page">
+            <div class="ptitle">Data Discovery</div>
+            <div class="psub">
+              Scan, locate, and map personal data across all systems
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Systems Scanned</div>
+                <div class="mv">18</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Data Sources</div>
+                <div class="mv">142</div>
+              </div>
+              <div class="mc">
+                <div class="ml">PII Records Found</div>
+                <div class="mv">4.2M</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Unclassified</div>
+                <div class="mv" style="color: var(--amber)">31K</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">
+                  &#128270; System Inventory &amp; Discovery Status
+                </div>
+              </div>
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>System</th>
+                    <th>Type</th>
+                    <th>Records</th>
+                    <th>Last Scan</th>
+                    <th>PII Found</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Customer DB</td>
+                    <td>RDBMS</td>
+                    <td>1.4M</td>
+                    <td>Jun 20</td>
+                    <td><span class="ct2 cp">Name, Email, Phone</span></td>
+                    <td><span class="tag ok">Classified</span></td>
+                  </tr>
+                  <tr>
+                    <td>CRM Platform</td>
+                    <td>SaaS</td>
+                    <td>820K</td>
+                    <td>Jun 19</td>
+                    <td><span class="ct2 cs">Health, Finance</span></td>
+                    <td><span class="tag ok">Classified</span></td>
+                  </tr>
+                  <tr>
+                    <td>Analytics Warehouse</td>
+                    <td>Cloud DW</td>
+                    <td>12M</td>
+                    <td>Jun 18</td>
+                    <td><span class="ct2 cp">Behavioral, Device</span></td>
+                    <td><span class="tag warn">In Review</span></td>
+                  </tr>
+                  <tr>
+                    <td>Support Tickets</td>
+                    <td>SaaS</td>
+                    <td>340K</td>
+                    <td>Jun 15</td>
+                    <td><span class="ct2 cs">Health (mentions)</span></td>
+                    <td><span class="tag warn">Partial</span></td>
+                  </tr>
+                  <tr>
+                    <td>Marketing DB</td>
+                    <td>RDBMS</td>
+                    <td>600K</td>
+                    <td>Jun 10</td>
+                    <td><span class="ct2 cp">Name, Email</span></td>
+                    <td><span class="tag ok">Classified</span></td>
+                  </tr>
+                  <tr>
+                    <td>Legacy Archive</td>
+                    <td>File Share</td>
+                    <td>Unknown</td>
+                    <td>Never</td>
+                    <td>—</td>
+                    <td><span class="tag crit">Not Scanned</span></td>
+                  </tr>
+                  <tr>
+                    <td>Mobile App Backend</td>
+                    <td>Cloud DB</td>
+                    <td>280K</td>
+                    <td>Jun 21</td>
+                    <td><span class="ct2 cc">Children's data</span></td>
+                    <td><span class="tag crit">Urgent Review</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ CLASSIFICATION ══ -->
+          <div id="p-classification" class="page">
+            <div class="ptitle">Data Classification</div>
+            <div class="psub">
+              DPDP-aligned personal data categorisation and tagging
+            </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="ml">Personal Data</div>
+                <div class="mv">3.8M</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Sensitive PD</div>
+                <div class="mv" style="color: var(--red)">420K</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Children's Data</div>
+                <div class="mv" style="color: var(--purple)">124K</div>
+              </div>
+              <div class="mc">
+                <div class="ml">Non-personal</div>
+                <div class="mv">8.1M</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">
+                  &#127991; Classification Taxonomy (DPDP-aligned)
+                </div>
+              </div>
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Data Types</th>
+                    <th>Legal Basis</th>
+                    <th>Extra Obligations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ct2 cp">Personal Data</span></td>
+                    <td>Name, email, phone, address, ID numbers</td>
+                    <td>Consent / Legitimate use (Sec 6, 7)</td>
+                    <td>Notice, purpose limitation, erasure</td>
+                  </tr>
+                  <tr>
+                    <td><span class="ct2 cs">Sensitive PD</span></td>
+                    <td>Health, financial, biometric, genetic, religion</td>
+                    <td>Explicit consent (Sec 6)</td>
+                    <td>Enhanced security, DPO review</td>
+                  </tr>
+                  <tr>
+                    <td><span class="ct2 cc">Children's Data</span></td>
+                    <td>Data of persons under 18 years</td>
+                    <td>Verifiable parental consent (Sec 9)</td>
+                    <td>No profiling, no behavioural tracking</td>
+                  </tr>
+                  <tr>
+                    <td><span class="ct2 cg">Public Data</span></td>
+                    <td>Voluntarily made public by data principal</td>
+                    <td>Not applicable — Sec 3 exclusion</td>
+                    <td>Verify public nature before exclusion</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="chips">
+                <button
+                  class="chip"
+                  onclick="
+                    showModal('tip', 'Health Data Classification', 'tip-health')
+                  "
+                >
+                  Health data classification
+                </button>
+                <button
+                  class="chip"
+                  onclick="showModal('tip', 'Biometric Data Rules', 'tip-bio')"
+                >
+                  Biometric data rules
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal('tip', 'Children Data Tagging', 'tip-children')
+                  "
+                >
+                  Children data tagging
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal('tip', 'Data Retention Policy', 'tip-retention')
+                  "
+                >
+                  Retention policy guide
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ DPO ══ -->
+          <div id="p-dpo" class="page">
+            <div class="ptitle">DPO Workspace</div>
+            <div class="psub">
+              Data Protection Officer tasks, reviews, and record-keeping
+            </div>
+            <div class="tcol">
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">&#9745; DPO Task Queue</div>
+                </div>
+                <div class="ai">
+                  <div class="aico c">&#9760;</div>
+                  <div>
+                    <div class="atitle">Review breach BR-2026-041</div>
+                    <div class="adesc">
+                      Approve DPB notification draft before deadline
+                    </div>
+                    <div class="atime">
+                      <span class="tag crit">Urgent</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai">
+                  <div class="aico w">&#128737;</div>
+                  <div>
+                    <div class="atitle">Parental consent audit</div>
+                    <div class="adesc">
+                      Review 124 flagged children's data records
+                    </div>
+                    <div class="atime"><span class="tag warn">High</span></div>
+                  </div>
+                </div>
+                <div class="ai">
+                  <div class="aico i">&#128196;</div>
+                  <div>
+                    <div class="atitle">DPIA — new analytics module</div>
+                    <div class="adesc">
+                      Data Protection Impact Assessment pending
+                    </div>
+                    <div class="atime">
+                      <span class="tag inf">Scheduled</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">
+                    &#128216; Records of Processing Activities
+                  </div>
+                </div>
+                <div class="sr">
+                  <span class="sn">Processing activities documented</span
+                  ><span class="sp">24/31</span>
+                </div>
+                <div class="pb" style="margin-bottom: 12px">
+                  <div class="pf a" style="width: 77%"></div>
+                </div>
+                <div class="sr">
+                  <span class="sn">DPIAs completed</span
+                  ><span class="sp">5/9</span>
+                </div>
+                <div class="pb" style="margin-bottom: 12px">
+                  <div class="pf a" style="width: 55%"></div>
+                </div>
+                <div class="sr">
+                  <span class="sn">Vendor DPAs signed</span
+                  ><span class="sp">18/22</span>
+                </div>
+                <div class="pb">
+                  <div class="pf g" style="width: 82%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch">
+                <div class="ct">&#129302; DPDP Reference Guides</div>
+              </div>
+              <div class="chips">
+                <button
+                  class="chip"
+                  onclick="
+                    showModal(
+                      'ref',
+                      'Draft DPB Breach Notice Guide',
+                      'ref-breach',
+                    )
+                  "
+                >
+                  Draft DPB breach notice guide
+                </button>
+                <button
+                  class="chip"
+                  onclick="showModal('ref', 'DPIA Template Guide', 'ref-dpia')"
+                >
+                  DPIA template guide
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal(
+                      'ref',
+                      'Data Processing Agreement Checklist',
+                      'ref-dpa',
+                    )
+                  "
+                >
+                  DPA checklist
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal('ref', 'DPO Obligations Summary', 'ref-dpo')
+                  "
+                >
+                  DPO obligations summary
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal(
+                      'ref',
+                      'Erasure Request Response Guide',
+                      'ref-erasure',
+                    )
+                  "
+                >
+                  Erasure response guide
+                </button>
+                <button
+                  class="chip"
+                  onclick="
+                    showModal('ref', 'Consent Withdrawal Guide', 'ref-consent')
+                  "
+                >
+                  Consent withdrawal guide
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ TIMELINE ══ -->
+          <div id="p-timeline" class="page">
+            <div class="ptitle">DPDP Act &amp; Rules Timeline</div>
+            <div class="psub">Key legislative and regulatory milestones</div>
+            <div class="card">
+              <div class="tli">
+                <div class="tld">Aug 2023</div>
+                <div class="tldot" style="background: var(--teal)"></div>
+                <div class="tlb">
+                  <div class="tlt">DPDP Act 2023 enacted</div>
+                  <div class="tls">
+                    Digital Personal Data Protection Act 2023 receives
+                    Presidential assent on August 11, 2023. Notified in the
+                    Official Gazette.
+                  </div>
+                </div>
+              </div>
+              <div class="tli">
+                <div class="tld">Jan 2025</div>
+                <div class="tldot" style="background: var(--blue)"></div>
+                <div class="tlb">
+                  <div class="tlt">Draft DPDP Rules 2025 released</div>
+                  <div class="tls">
+                    MeitY publishes draft Digital Personal Data Protection Rules
+                    2025 for public consultation.
+                  </div>
+                </div>
+              </div>
+              <div class="tli">
+                <div class="tld">Apr 2025</div>
+                <div class="tldot" style="background: var(--blue)"></div>
+                <div class="tlb">
+                  <div class="tlt">DPDP Rules 2025 notified</div>
+                  <div class="tls">
+                    Digital Personal Data Protection Rules 2025 gazetted. Rules
+                    covering notice, consent, breach notification, and grievance
+                    redressal come into effect.
+                  </div>
+                </div>
+              </div>
+              <div class="tli">
+                <div class="tld">2025–26</div>
+                <div class="tldot" style="background: var(--amber)"></div>
+                <div class="tlb">
+                  <div class="tlt">Data Protection Board constituted</div>
+                  <div class="tls">
+                    DPB operationalised by Central Government. Digital
+                    complaints and inquiry platform launched for data
+                    principals.
+                  </div>
+                </div>
+              </div>
+              <div class="tli">
+                <div class="tld">Jun 2026</div>
+                <div class="tldot" style="background: var(--red)"></div>
+                <div class="tlb">
+                  <div class="tlt">Today — enforcement fully active</div>
+                  <div class="tls">
+                    Full compliance obligations in force. DPB adjudications
+                    underway. Data Fiduciaries subject to penalties for
+                    violations.
+                  </div>
+                </div>
+              </div>
+              <div class="tli">
+                <div class="tld">TBD</div>
+                <div class="tldot" style="background: var(--border2)"></div>
+                <div class="tlb">
+                  <div class="tlt">Significant Data Fiduciary designations</div>
+                  <div class="tls">
+                    Central Government to notify list of Significant Data
+                    Fiduciaries (Sec 10) with additional obligations: DPO
+                    appointment, DPIA, and algorithmic audit.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ ARTICLES ══ -->
+          <div id="p-articles" class="page">
+            <div class="ptitle">Act &amp; Rules Index</div>
+            <div class="psub">
+              Quick reference to DPDP Act 2023 sections and Rules 2025
+            </div>
+            <div class="tcol">
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">&#128216; DPDP Act 2023 — Key Sections</div>
+                </div>
+                <table class="dt">
+                  <thead>
+                    <tr>
+                      <th>Section</th>
+                      <th>Provision</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 4</td>
+                      <td>Applicability &amp; territorial scope</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 4 — Applicability &amp; Scope',
+                              'sec4',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 5</td>
+                      <td>Notice requirement</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 5 — Notice Requirement',
+                              'sec5',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 6</td>
+                      <td>Consent</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal('act', 'Section 6 — Consent', 'sec6')
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 7</td>
+                      <td>Legitimate use without consent</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 7 — Legitimate Use Without Consent',
+                              'sec7',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 8</td>
+                      <td>Data Fiduciary obligations</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 8 — Data Fiduciary Obligations',
+                              'sec8',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 9</td>
+                      <td>Children's data</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 9 — Children\'s Personal Data',
+                              'sec9',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 10</td>
+                      <td>Significant Data Fiduciary</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 10 — Significant Data Fiduciary',
+                              'sec10',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 11–14</td>
+                      <td>Data Principal rights</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Sections 11–14 — Data Principal Rights',
+                              'sec11',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 16</td>
+                      <td>Cross-border transfers</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 16 — Cross-border Data Transfers',
+                              'sec16',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 18–27</td>
+                      <td>DPB powers &amp; procedure</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Sections 18–27 — Data Protection Board',
+                              'sec18',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--blue)">Sec 33</td>
+                      <td>Penalties</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'act',
+                              'Section 33 &amp; Schedule — Penalties',
+                              'sec33',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <div class="ch">
+                  <div class="ct">&#128196; DPDP Rules 2025 — Key Rules</div>
+                </div>
+                <table class="dt">
+                  <thead>
+                    <tr>
+                      <th>Rule</th>
+                      <th>Subject</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 3</td>
+                      <td>Notice format &amp; languages</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 3 — Notice Format &amp; Languages',
+                              'rule3',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 4</td>
+                      <td>Consent manager requirements</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 4 — Consent Manager Requirements',
+                              'rule4',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 5</td>
+                      <td>Verifiable parental consent</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 5 — Verifiable Parental Consent',
+                              'rule5',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 7</td>
+                      <td>Breach intimation to DPB</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 7 — Breach Intimation to DPB',
+                              'rule7',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 9</td>
+                      <td>Significant DF additional duties</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 9 — Significant Data Fiduciary Duties',
+                              'rule9',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 12</td>
+                      <td>Cross-border transfer conditions</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 12 — Cross-border Transfer Conditions',
+                              'rule12',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono" style="color: var(--teal)">Rule 13</td>
+                      <td>Grievance redressal mechanism</td>
+                      <td>
+                        <button
+                          class="ca"
+                          onclick="
+                            showModal(
+                              'rule',
+                              'Rule 13 — Grievance Redressal Mechanism',
+                              'rule13',
+                            )
+                          "
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /content -->
+      </div>
+      <!-- /body -->
+    </div>
+    <!-- /app -->
+
+    <!-- ══ INFO MODAL ══ -->
+    <div id="modal-overlay" onclick="closeModal(event)">
+      <div id="modal-box">
+        <div id="modal-head">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0;
+              flex: 1;
+              min-width: 0;
+            "
+          >
+            <span id="modal-label" class="act">ACT</span>
+            <span id="modal-title">Details</span>
+          </div>
+          <button id="modal-close" onclick="closeModal()" aria-label="Close">
+            &#10005;
+          </button>
+        </div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script>
+      /* ── Modal content data ── */
+      var MODAL_DATA = {
+        sec4: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 4 defines the applicability and territorial scope of the DPDP Act 2023.</p></div><div class="modal-section"><div class="modal-section-title">Key Provisions</div><ul class="modal-bullets"><li>Applies to processing of <strong>digital personal data within India</strong>, whether collected online or offline if digitised.</li><li>Applies to processing <strong>outside India</strong> if it is in connection with offering goods or services to data principals located in India.</li><li>Does <strong>not apply</strong> to personal data processed for personal or domestic purposes, or data made publicly available by the data principal.</li></ul></div><div class="modal-section"><div class="modal-section-title">Compliance Action</div><p>Map all data flows to determine territorial applicability. Even foreign subsidiaries processing Indian users\' data are covered.</p></div>',
+
+        sec5: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 5 requires a Data Fiduciary to give notice to the data principal before or at the time of collecting personal data for processing based on consent.</p></div><div class="modal-section"><div class="modal-section-title">Notice Must Include</div><ul class="modal-bullets"><li>The personal data being collected and the purpose of processing.</li><li>The manner in which the data principal can exercise their rights under the Act.</li><li>The manner in which the data principal can make a complaint to the DPB.</li><li>How the principal can withdraw consent.</li></ul></div><div class="modal-section"><div class="modal-section-title">Format Requirements</div><p>Per Rule 3, the notice must be available in all 22 scheduled languages of India, in clear and plain language, and specify itemised purposes.</p></div>',
+
+        sec6: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 6 governs the conditions for valid consent under the DPDP Act.</p></div><div class="modal-section"><div class="modal-section-title">Consent Must Be</div><ul class="modal-bullets"><li><strong>Free</strong> — not coerced or conditional on service delivery for unrelated processing.</li><li><strong>Specific</strong> — for a clearly identified purpose.</li><li><strong>Informed</strong> — after receiving proper notice.</li><li><strong>Unconditional</strong> — no bundling of unrelated consents.</li><li><strong>Unambiguous</strong> — through a clear affirmative action.</li></ul></div><div class="modal-section"><div class="modal-section-title">Withdrawal</div><p>Consent may be withdrawn at any time. Withdrawal must be as easy as giving consent. The Data Fiduciary must stop processing within a reasonable period and inform all Data Processors.</p></div>',
+
+        sec7: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 7 permits processing of personal data for certain legitimate uses without requiring consent of the data principal.</p></div><div class="modal-section"><div class="modal-section-title">Permitted Legitimate Uses</div><ul class="modal-bullets"><li>Performance of a function by the State or any instrumentality of the State.</li><li>Compliance with any law, judgment, or order of court or tribunal.</li><li>Responding to a medical emergency involving a threat to life or health.</li><li>Disaster management and public health measures.</li><li>Processing by an employer for employment-related purposes.</li><li>Processing for reasonable purposes notified by the Central Government.</li></ul></div>',
+
+        sec8: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 8 sets out the general obligations of every Data Fiduciary when processing personal data.</p></div><div class="modal-section"><div class="modal-section-title">Key Obligations</div><ul class="modal-bullets"><li>Ensure completeness, accuracy, and consistency of personal data.</li><li>Implement appropriate technical and organisational security safeguards.</li><li>Notify the DPB and affected data principals of any personal data breach.</li><li>Erase personal data as soon as the purpose for which it was collected is no longer served.</li><li>Publish contact details of a Data Protection Officer or designated point of contact.</li><li>Establish an effective grievance redressal mechanism.</li></ul></div><div class="modal-section"><div class="modal-section-title">Processor Accountability</div><p>The Data Fiduciary remains accountable for compliance even when processing is done by a Data Processor. A Data Processing Agreement is required.</p></div>',
+
+        sec9: '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 9 provides special protections for the personal data of children (persons under 18 years of age).</p></div><div class="modal-section"><div class="modal-section-title">Key Requirements</div><ul class="modal-bullets"><li>Processing of children\'s personal data requires <strong>verifiable parental consent</strong> before collection.</li><li>Data Fiduciaries must implement age-verification and parental consent verification mechanisms (per Rule 5).</li><li><strong>Prohibited</strong>: behavioural monitoring, targeted advertising, and tracking of children.</li><li><strong>Prohibited</strong>: processing that is likely to cause detrimental effect on the well-being of children.</li></ul></div><div class="modal-section"><div class="modal-section-title">Current Gap</div><p>Your portal has flagged 124 minor data principals without verified parental consent. This is a critical gap attracting a penalty of up to ₹200 Crore.</p></div>',
+
+        sec10:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 10 imposes additional obligations on entities designated as Significant Data Fiduciaries (SDF) by the Central Government.</p></div><div class="modal-section"><div class="modal-section-title">Additional SDF Obligations</div><ul class="modal-bullets"><li>Appoint a <strong>Data Protection Officer (DPO)</strong> based in India, accountable to the Board of Directors.</li><li>Appoint an independent <strong>Data Auditor</strong> to conduct periodic audits.</li><li>Conduct periodic <strong>Data Protection Impact Assessments (DPIAs)</strong>.</li><li>Undertake other measures as may be prescribed by the Central Government.</li></ul></div><div class="modal-section"><div class="modal-section-title">Note</div><p>The Central Government has not yet published the final list of Significant Data Fiduciaries. Monitor MeitY notifications.</p></div>',
+
+        sec11:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Sections 11 to 14 collectively define the rights available to every data principal.</p></div><div class="modal-section"><div class="modal-section-title">Rights Summary</div><ul class="modal-bullets"><li><strong>Sec 11 — Right to Information:</strong> Data principal can obtain a summary of personal data being processed and the identities of all Data Processors.</li><li><strong>Sec 12 — Right to Correction &amp; Erasure:</strong> Correct inaccurate or misleading data; erase data no longer necessary for the purpose collected.</li><li><strong>Sec 13 — Right to Grievance Redressal:</strong> Raise grievances with the Data Fiduciary; if unsatisfied, approach the DPB.</li><li><strong>Sec 14 — Right to Nominate:</strong> Nominate any other individual to exercise rights on their behalf in case of death or incapacity.</li></ul></div><div class="modal-section"><div class="modal-section-title">Timelines</div><p>Grievances must be acknowledged within 48 hours and resolved within 30 days per Rule 13.</p></div>',
+
+        sec16:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 16 governs the transfer of personal data outside India to foreign jurisdictions.</p></div><div class="modal-section"><div class="modal-section-title">Key Provisions</div><ul class="modal-bullets"><li>Personal data may only be transferred to countries <strong>notified by the Central Government</strong> as permissible destinations (whitelist model).</li><li>The Central Government may restrict transfers of certain categories of personal data based on national security or sovereignty concerns.</li><li>Data Fiduciaries must monitor and update transfer mechanisms as the whitelist evolves.</li></ul></div><div class="modal-section"><div class="modal-section-title">Current Status</div><p>The DPB recently added 12 new countries to the approved whitelist. Review all ongoing cross-border data transfers to ensure recipients are in whitelisted jurisdictions.</p></div>',
+
+        sec18:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Sections 18–27 establish the Data Protection Board of India (DPB), its constitution, powers, and adjudication procedures.</p></div><div class="modal-section"><div class="modal-section-title">Key Powers</div><ul class="modal-bullets"><li>Inquire into personal data breaches on complaint or suo motu.</li><li>Issue directions to Data Fiduciaries and Data Processors.</li><li>Impose financial penalties as per the Schedule to the Act.</li><li>Conduct all proceedings in a digital and online mode.</li></ul></div><div class="modal-section"><div class="modal-section-title">Appeals</div><p>Appeals against DPB orders lie before the Telecom Disputes Settlement and Appellate Tribunal (TDSAT). A further appeal lies to the High Court on questions of law.</p></div>',
+
+        sec33:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Section 33 read with the Schedule prescribes the maximum financial penalties for violations of the Act.</p></div><div class="modal-section"><div class="modal-section-title">Penalty Schedule</div><div class="modal-penalty-row"><span>Breach notification failure (Sec 8(6))</span><span class="amount">₹200 Crore</span></div><div class="modal-penalty-row"><span>Children\'s data violations (Sec 9)</span><span class="amount">₹200 Crore</span></div><div class="modal-penalty-row"><span>Non-fulfilment of Sec 8 duties</span><span class="amount">₹150 Crore</span></div><div class="modal-penalty-row"><span>Significant DF violations (Sec 10)</span><span class="amount">₹150 Crore</span></div><div class="modal-penalty-row"><span>Violation of data principal rights (Sec 11–14)</span><span class="amount">₹50 Crore</span></div><div class="modal-penalty-row"><span>Other provisions of the Act</span><span class="amount">₹50 Crore</span></div></div><div class="modal-section"><div class="modal-section-title">Note</div><p>Penalties are determined by DPB after considering the nature, gravity, and duration of the default. No penalty is imposed without a fair hearing.</p></div>',
+
+        rule3:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 3 specifies the form and manner of the notice that a Data Fiduciary must provide to a data principal.</p></div><div class="modal-section"><div class="modal-section-title">Requirements</div><ul class="modal-bullets"><li>Must be in <strong>clear and plain language</strong> that the data principal can understand.</li><li>Must be available in all <strong>22 scheduled languages</strong> of the Eighth Schedule to the Constitution.</li><li>Must itemise each purpose for which data is being processed — bundled purposes are not permitted.</li><li>Must contain a link or reference to the consent withdrawal mechanism.</li><li>For existing data: notice must be provided at the time of first interaction after the Act commences.</li></ul></div>',
+
+        rule4:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 4 governs the registration and obligations of Consent Managers — entities that act as intermediaries to manage consent on behalf of data principals.</p></div><div class="modal-section"><div class="modal-section-title">Consent Manager Obligations</div><ul class="modal-bullets"><li>Must be registered with the Data Protection Board of India.</li><li>Maintain a <strong>consent artefact</strong> — an interoperable, machine-readable record of consent given, reviewed, or withdrawn.</li><li>Provide data principals a single interface to manage consents across multiple Data Fiduciaries.</li><li>Must meet technical standards prescribed by the Board.</li></ul></div>',
+
+        rule5:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 5 specifies the mechanisms for obtaining verifiable parental or guardian consent before processing children\'s personal data under Section 9.</p></div><div class="modal-section"><div class="modal-section-title">Requirements</div><ul class="modal-bullets"><li>Data Fiduciaries must implement <strong>age verification</strong> to identify users who are minors before collecting their data.</li><li>Parental/guardian identity and relationship must be <strong>verified</strong> — not merely asserted.</li><li>Verification may use government-issued identity documents or Consent Manager platforms.</li><li>Processing must not commence until verifiable consent is obtained and recorded.</li></ul></div><div class="modal-section"><div class="modal-section-title">Current Gap</div><p>124 records in your Mobile App Backend have been flagged as children\'s data without verified parental consent — immediate remediation required.</p></div>',
+
+        rule7:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 7 prescribes the procedure for intimating the Data Protection Board about personal data breaches under Section 8(6).</p></div><div class="modal-section"><div class="modal-section-title">Notification Timeline</div><p>Breach must be notified to the DPB <strong>as soon as possible</strong> after becoming aware of it. Best practice (per international norms) is within 72 hours.</p></div><div class="modal-section"><div class="modal-section-title">Notification Must Contain</div><ul class="modal-bullets"><li>Description of the nature of the personal data breach.</li><li>Categories and approximate number of data principals affected.</li><li>Categories and approximate volume of personal data records affected.</li><li>Likely consequences of the breach.</li><li>Measures taken or proposed to address the breach and mitigate its effects.</li><li>Name and contact of the Data Protection Officer or designated contact person.</li></ul></div>',
+
+        rule9:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 9 prescribes additional compliance obligations for entities designated as Significant Data Fiduciaries under Section 10.</p></div><div class="modal-section"><div class="modal-section-title">Key Requirements</div><ul class="modal-bullets"><li>Appoint a <strong>Data Protection Officer (DPO)</strong> who is an individual based in India, accountable to the Board of Directors or equivalent body.</li><li>Conduct a <strong>Data Protection Impact Assessment (DPIA)</strong> for new or changed processing activities that may create significant risks.</li><li>Carry out an <strong>independent data audit</strong> annually to verify compliance with the Act and Rules.</li><li>Implement additional organisational and technical measures as prescribed.</li></ul></div>',
+
+        rule12:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 12 prescribes the conditions under which personal data may be transferred to a country or territory outside India.</p></div><div class="modal-section"><div class="modal-section-title">Transfer Conditions</div><ul class="modal-bullets"><li>Transfer is permitted only to countries on the <strong>whitelist notified by the Central Government</strong> under Section 16.</li><li>Certain categories of personal data (e.g., sensitive data of government employees) may be subject to additional restrictions.</li><li>Data Fiduciaries must maintain records of all cross-border transfers and the legal basis.</li></ul></div><div class="modal-section"><div class="modal-section-title">Action Required</div><p>Review all third-party vendors, cloud providers, and partners receiving Indian personal data to confirm they are in whitelisted jurisdictions.</p></div>',
+
+        rule13:
+          '<div class="modal-section"><div class="modal-section-title">Overview</div><p>Rule 13 prescribes the requirements for the grievance redressal mechanism that every Data Fiduciary must establish for data principals.</p></div><div class="modal-section"><div class="modal-section-title">Requirements</div><ul class="modal-bullets"><li>Publish the name and contact details of the <strong>grievance officer</strong> or Data Protection Officer on the website and app.</li><li>Acknowledge receipt of a grievance within <strong>48 hours</strong>.</li><li>Resolve every grievance within <strong>30 days</strong> of receipt.</li><li>Provide the data principal with a written outcome or decision.</li><li>If unsatisfied, data principal may approach the DPB.</li></ul></div><div class="modal-section"><div class="modal-section-title">Current Status</div><p>3 grievances (GR-1042, GR-1041, GR-1040) have exceeded the 30-day resolution window and are overdue.</p></div>',
+
+        "tip-health":
+          '<div class="modal-section"><div class="modal-section-title">Classification</div><p>Health and medical data is classified as <strong>Sensitive Personal Data</strong> under the DPDP framework.</p></div><div class="modal-section"><div class="modal-section-title">Requirements</div><ul class="modal-bullets"><li>Requires <strong>explicit and specific consent</strong> per Section 6 — bundled consent with other purposes is not valid.</li><li>Enhanced security safeguards must be implemented for storage and transmission.</li><li>Access must be strictly limited on a need-to-know basis.</li><li>DPO review required before any new processing activity involving health data.</li><li>Special care for health data in support tickets and unstructured text — NLP-based discovery recommended.</li></ul></div>',
+
+        "tip-bio":
+          '<div class="modal-section"><div class="modal-section-title">Classification</div><p>Biometric data (fingerprints, facial recognition, iris scans, voiceprints) is classified as <strong>Sensitive Personal Data</strong>.</p></div><div class="modal-section"><div class="modal-section-title">Requirements</div><ul class="modal-bullets"><li>Requires explicit consent per Section 6.</li><li>Must be encrypted at rest and in transit with strong encryption standards.</li><li>Retention limited strictly to the period necessary for the stated purpose.</li><li>Cannot be shared with third parties without fresh explicit consent.</li><li>Biometric templates must not be stored in raw form — use hashed/encrypted templates only.</li></ul></div>',
+
+        "tip-children":
+          '<div class="modal-section"><div class="modal-section-title">Identification Steps</div><ul class="modal-bullets"><li>Implement age verification at point of data collection.</li><li>Flag records where date of birth indicates age under 18.</li><li>Review user registration flows for child-friendly platforms.</li><li>Scan analytics and CRM for child-identifiable attributes (school name, grade, parent fields).</li></ul></div><div class="modal-section"><div class="modal-section-title">Tagging in Your System</div><p>Use the classification tag <strong>Children\'s Data</strong> in your data catalogue. Trigger parental consent workflow before any processing. Prohibit profiling, ad-targeting, and behavioural tracking for these records per Section 9.</p></div>',
+
+        "tip-retention":
+          '<div class="modal-section"><div class="modal-section-title">DPDP Position on Retention</div><p>The DPDP Act 2023 does not prescribe specific retention periods. However, Section 8(7) requires Data Fiduciaries to <strong>erase personal data as soon as the purpose for which it was collected is no longer served</strong> and the retention period (if any) has expired.</p></div><div class="modal-section"><div class="modal-section-title">Recommended Approach</div><ul class="modal-bullets"><li>Define purpose-based retention schedules for each data category.</li><li>Align with other applicable laws (IT Act, sector-specific regulations).</li><li>Implement automated deletion triggers when retention period expires.</li><li>Document retention decisions in your Records of Processing Activities (ROPA).</li></ul></div>',
+
+        "ref-breach":
+          '<div class="modal-section"><div class="modal-section-title">DPB Breach Notification — Required Contents (Rule 7)</div><ul class="modal-bullets"><li><strong>Description:</strong> Nature and type of the personal data breach.</li><li><strong>Scope:</strong> Categories and approximate number of data principals and records affected.</li><li><strong>Impact:</strong> Likely consequences of the breach on affected individuals.</li><li><strong>Response:</strong> Measures taken or proposed to contain and mitigate the breach.</li><li><strong>Contact:</strong> Name, designation, and contact details of the DPO or designated officer.</li></ul></div><div class="modal-section"><div class="modal-section-title">Notification to Principals</div><p>DPB may direct the Data Fiduciary to notify affected data principals. The notification must describe the breach and advise principals on protective measures they can take.</p></div>',
+
+        "ref-dpia":
+          '<div class="modal-section"><div class="modal-section-title">DPIA — Key Components</div><ul class="modal-bullets"><li><strong>Description of Processing:</strong> Purpose, nature, scope, and context of the processing activity.</li><li><strong>Necessity Assessment:</strong> Why the processing is necessary and proportionate to the purpose.</li><li><strong>Risk Assessment:</strong> Identify risks to rights and freedoms of data principals.</li><li><strong>Safeguards:</strong> Technical and organisational measures to mitigate identified risks.</li><li><strong>DPO Sign-off:</strong> Data Protection Officer must review and approve the DPIA.</li></ul></div><div class="modal-section"><div class="modal-section-title">When Is a DPIA Required?</div><p>Mandatory for Significant Data Fiduciaries (Sec 10 / Rule 9) for new or materially changed processing activities. Best practice for all high-risk processing regardless of SDF status.</p></div>',
+
+        "ref-dpa":
+          '<div class="modal-section"><div class="modal-section-title">Data Processing Agreement — Required Elements (Sec 8(2))</div><ul class="modal-bullets"><li><strong>Scope:</strong> Description of the processing activities and categories of data.</li><li><strong>Purpose:</strong> Explicit limitation on the purpose for which the Processor may use the data.</li><li><strong>Security:</strong> Technical and organisational security measures the Processor must implement.</li><li><strong>Sub-processors:</strong> Restriction on engaging sub-processors without prior authorisation.</li><li><strong>Deletion:</strong> Obligation to delete or return data upon termination of engagement.</li><li><strong>Audit rights:</strong> Right of the Fiduciary to audit the Processor\'s compliance.</li></ul></div>',
+
+        "ref-dpo":
+          '<div class="modal-section"><div class="modal-section-title">DPO Core Obligations</div><ul class="modal-bullets"><li>Oversee the organisation\'s compliance with the DPDP Act and Rules.</li><li>Act as the primary point of contact with the Data Protection Board of India.</li><li>Respond to data principal rights requests and grievances.</li><li>Maintain and update Records of Processing Activities (ROPA).</li><li>Review and sign off on DPIAs for high-risk processing activities.</li><li>Train staff on DPDP obligations and awareness.</li><li>Monitor data breach response and notification timelines.</li></ul></div><div class="modal-section"><div class="modal-section-title">For Significant Data Fiduciaries</div><p>The DPO must be an individual based in India, appointed by and accountable to the Board of Directors per Section 10 and Rule 9.</p></div>',
+
+        "ref-erasure":
+          '<div class="modal-section"><div class="modal-section-title">Responding to Erasure Requests (Sec 12)</div><ul class="modal-bullets"><li>Data principal must submit a request to the grievance officer or designated contact.</li><li>Acknowledge the request within <strong>48 hours</strong> of receipt.</li><li>Verify the identity of the data principal before acting.</li><li>Assess whether the data is still necessary for the original purpose.</li><li>If not necessary: erase the data and confirm erasure to the principal within <strong>30 days</strong>.</li><li>If necessary: inform the principal of the reason for retention and the expected erasure date.</li><li>Instruct all Data Processors and sub-processors to erase the data.</li></ul></div>',
+
+        "ref-consent":
+          '<div class="modal-section"><div class="modal-section-title">Consent Withdrawal Process (Sec 6(4))</div><ul class="modal-bullets"><li>Withdrawal must be as <strong>easy and accessible</strong> as the mechanism used to give consent.</li><li>Provide a one-click or equivalent withdrawal option in the account settings, consent dashboard, or via email.</li><li>On withdrawal: cease processing within a <strong>reasonable time period</strong>.</li><li>Notify all Data Processors and sub-processors to cease processing.</li><li>Inform the data principal of the consequences of withdrawal (e.g., loss of service access).</li><li>Record the withdrawal event with a timestamp in your consent audit trail.</li></ul></div><div class="modal-section"><div class="modal-section-title">Important</div><p>Withdrawal does not affect the lawfulness of processing carried out before withdrawal. It only operates prospectively.</p></div>',
+      };
+
+      function showModal(type, title, key) {
+        var content = MODAL_DATA[key];
+        if (!content) {
+          content =
+            '<div class="modal-section"><p>Details for this provision are being updated.</p></div>';
+        }
+        document.getElementById("modal-title").textContent = title;
+        var label = document.getElementById("modal-label");
+        label.className = "act";
+        if (type === "rule") {
+          label.className = "rule";
+          label.textContent = "RULE";
+        } else if (type === "tip") {
+          label.className = "tip";
+          label.textContent = "TIP";
+        } else if (type === "ref") {
+          label.className = "ref";
+          label.textContent = "REF";
+        } else {
+          label.className = "act";
+          label.textContent = "ACT";
+        }
+        document.getElementById("modal-body").innerHTML = content;
+        document.getElementById("modal-overlay").classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal(e) {
+        if (
+          !e ||
+          e.target === document.getElementById("modal-overlay") ||
+          e.currentTarget === document.getElementById("modal-close")
+        ) {
+          document.getElementById("modal-overlay").classList.remove("show");
+          document.body.style.overflow = "";
+        }
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape")
+          closeModal({ target: document.getElementById("modal-overlay") });
+      });
+
+      function nav(pageId, el) {
+        document.querySelectorAll(".page").forEach(function (p) {
+          p.classList.remove("show");
+        });
+        document.querySelectorAll(".ni").forEach(function (n) {
+          n.classList.remove("active");
+        });
+        var page = document.getElementById("p-" + pageId);
+        if (page) page.classList.add("show");
+        var navItem = el ? el.closest(".ni") || el : null;
+        if (navItem) navItem.classList.add("active");
+        closeSidebar();
+        document.getElementById("content").scrollTop = 0;
+      }
+
+      function filterA(sev, btn) {
+        document.querySelectorAll(".fb .fbtn").forEach(function (b) {
+          b.classList.remove("act");
+        });
+        btn.classList.add("act");
+        document.querySelectorAll("#alert-list .ai").forEach(function (item) {
+          item.style.display =
+            sev === "all" || item.dataset.s === sev ? "flex" : "none";
+        });
+      }
+
+      function toggleSidebar() {
+        var sb = document.getElementById("sidebar");
+        var ov = document.getElementById("overlay");
+        sb.classList.toggle("open");
+        ov.classList.toggle("show");
+      }
+
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("show");
+      }
+    </script>
+  </body>
+</html>
